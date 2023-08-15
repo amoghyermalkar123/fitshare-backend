@@ -11,22 +11,26 @@ const (
 )
 
 type Set struct {
-	Count int    `json:"count"`
-	Reps  string `json:"reps"`
+	Count int    `json:"count" bson:"count"`
+	Reps  string `json:"reps" bson:"reps"`
 }
 
 type Exercise struct {
-	Name string `json:"name"`
-	Sets []Set  `json:"sets"`
+	Name string `json:"name" bson:"name"`
+	Sets []Set  `json:"sets" bson:"sets"`
 }
 
 type Routine struct {
-	Name      string          `json:"name"`
-	Category  RoutineCategory `json:"category"`
-	Exercises []Exercise      `json:"exercises"`
+	Name      string          `json:"name" bson:"name"`
+	Category  RoutineCategory `json:"category" bson:"category"`
+	Exercises []Exercise      `json:"exercises" bson:"exercises"`
 }
 
 type UserRoutine struct {
-	Email   string  `json:"email"`
-	Routine Routine `json:"routine"`
+	Email   string  `json:"email" bson:"email"`
+	Routine Routine `json:"routine" bson:"routine"`
+}
+
+type UserRoutineRequest struct {
+	UserEmail string `json:"email"`
 }

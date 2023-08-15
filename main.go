@@ -13,7 +13,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	db, err := db.GetDB("db")
+	db, err := db.GetDB("127.0.0.1")
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +24,11 @@ func main() {
 	r.POST("/login", api.Login)
 	r.POST("/signup", api.Signup)
 
-	r.POST("/protectedAPI", middlewares.Auth())
+	userApi := r.Group("/user", middlewares.Auth())
+	{
+		userApi.POST("/routine", api.CreateRoutine)
+		userApi.GET("/:user-email/routine", api.GetRoutine)
+	}
 	godotenv.Load()
 	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }

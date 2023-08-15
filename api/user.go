@@ -58,17 +58,3 @@ func (a *Api) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"user_details": userInfo, "token": tokenString})
 }
-
-func (a *Api) AddRoutine(c *gin.Context) {
-	routineDetails := &types.UserRoutine{}
-	if err := c.Bind(routineDetails); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": fmt.Errorf("failed request operation: %v", err).Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"status": "success"})
-}
-
-func (a *Api) GetRoutines(c *gin.Context)    {}
-func (a *Api) CreateSchedule(c *gin.Context) {}
-func (a *Api) UpdateSchedule(c *gin.Context) {}
