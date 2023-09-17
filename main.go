@@ -29,6 +29,17 @@ func main() {
 		userApi.POST("/routine", api.CreateRoutine)
 		userApi.GET("/:user-email/routine", api.GetRoutine)
 	}
+
+	gymAdminApi := r.Group("/gym-admin", middlewares.Auth())
+	{
+		// add people to gym
+		gymAdminApi.POST("/people", api.AddPeople)
+		// add event schedule for the week
+		gymAdminApi.POST("/schedule", api.AddWeeklySchedule)
+		// update event schedule for the week
+		gymAdminApi.PUT("/schedule", api.UpdateWeeklySchedule)
+	}
+
 	godotenv.Load()
 	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
 }

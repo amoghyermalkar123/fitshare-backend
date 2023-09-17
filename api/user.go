@@ -3,16 +3,11 @@ package api
 import (
 	"fitshare/api/types"
 	"fitshare/auth"
-	"fitshare/db"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
-
-type Api struct {
-	DB *db.DB
-}
 
 func (a *Api) Signup(c *gin.Context) {
 	userDetails := &types.UserDetails{}

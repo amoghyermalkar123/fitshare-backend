@@ -1,0 +1,14 @@
+{
+    "workout_name":"",
+    "exercises": [
+        {
+            "exercise_name": "",
+            "sets": [
+                {
+                    "weight":"",
+                    "reps":""
+                }
+            ]
+        }
+    ]
+}
