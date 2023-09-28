@@ -12,7 +12,7 @@ import (
 
 func main() {
 	r := gin.Default()
-	db, err := db.GetDB("127.0.0.1")
+	db, err := db.GetDB("db")
 	if err != nil {
 		panic(err)
 	}
@@ -26,8 +26,8 @@ func main() {
 	userApi := r.Group("/user")
 	{
 		userApi.POST("/routine", api.CreateRoutine)
-		userApi.GET("/:user-email/routine", api.GetRoutine)
-		userApi.GET("/homepage", api.HomePage)
+		userApi.GET("/:username/routine", api.GetRoutine)
+		userApi.GET("/:username/homepage", api.HomePage)
 	}
 
 	gymAdminApi := r.Group("/gym-admin")

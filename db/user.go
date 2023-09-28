@@ -60,39 +60,24 @@ func (db *DB) ValidatePassword(inputPassword, dbPassword string) bool {
 	return true
 }
 
-func (db *DB) GetGymEventsAndPeople(gymID string) (*types.UserHomePage, error) {
-	coll := db.client.Database("fitshare").Collection("gym_schedule")
-	gymObjectID, err := primitive.ObjectIDFromHex(gymID)
+func (db *DB) GetGymEventsAndPeople(username string) (*types.UserHomePage, error) {
+	memColl := db.client.Database("fitshare").Collection("gym_members")
+	var gymId primitive.ObjectID
+	err := memColl.FindOne(context.TODO(), bson.D{{"members", username}}).Decode(gymId)
 	if err != nil {
 		return nil, err
 	}
+
+	coll := db.client.Database("fitshare").Collection("gym_schedule")
 	// today := time.Now().UTC()
 
 	filter := bson.M{
-		"gym_id": gymObjectID,
-		// "schedule": bson.M{
-		// 	"$elemMatch": bson.M{
-		// 		"date_time": bson.M{
-		// 			"$gte": today,
-		// 			"$lt":  today.Add(24 * time.Hour),
-		// 		},
-		// 	},
-		// },
+		"gym_id": gymId,
 	}
 
-	cursor, err := coll.Find(context.Background(), filter)
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
+	res := &dbtypes.GymWeeklySchedule{}
+	result := coll.FindOne(context.Background(), filter).Decode(res)
 
-	var results []*dbtypes.GymWeeklySchedule
-	if err := cursor.All(context.Background(), &results); err != nil {
-		return nil, err
-	}
-
-	for _, result := range results {
-		fmt.Println(result)
-	}
+	fmt.Println(result)
 	return nil, nil
 }
