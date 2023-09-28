@@ -4,8 +4,11 @@ import (
 	"context"
 	"errors"
 	"fitshare/api/types"
+	dbtypes "fitshare/db/dbTypes"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -55,4 +58,41 @@ func (db *DB) ValidatePassword(inputPassword, dbPassword string) bool {
 		return false
 	}
 	return true
+}
+
+func (db *DB) GetGymEventsAndPeople(gymID string) (*types.UserHomePage, error) {
+	coll := db.client.Database("fitshare").Collection("gym_schedule")
+	gymObjectID, err := primitive.ObjectIDFromHex(gymID)
+	if err != nil {
+		return nil, err
+	}
+	// today := time.Now().UTC()
+
+	filter := bson.M{
+		"gym_id": gymObjectID,
+		// "schedule": bson.M{
+		// 	"$elemMatch": bson.M{
+		// 		"date_time": bson.M{
+		// 			"$gte": today,
+		// 			"$lt":  today.Add(24 * time.Hour),
+		// 		},
+		// 	},
+		// },
+	}
+
+	cursor, err := coll.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	var results []*dbtypes.GymWeeklySchedule
+	if err := cursor.All(context.Background(), &results); err != nil {
+		return nil, err
+	}
+
+	for _, result := range results {
+		fmt.Println(result)
+	}
+	return nil, nil
 }

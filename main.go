@@ -2,7 +2,6 @@ package main
 
 import (
 	"fitshare/api"
-	"fitshare/api/middlewares"
 	"fitshare/db"
 	"fmt"
 	"os"
@@ -24,13 +23,14 @@ func main() {
 	r.POST("/login", api.Login)
 	r.POST("/signup", api.Signup)
 
-	userApi := r.Group("/user", middlewares.Auth())
+	userApi := r.Group("/user")
 	{
 		userApi.POST("/routine", api.CreateRoutine)
 		userApi.GET("/:user-email/routine", api.GetRoutine)
+		userApi.GET("/homepage", api.HomePage)
 	}
 
-	gymAdminApi := r.Group("/gym-admin", middlewares.Auth())
+	gymAdminApi := r.Group("/gym-admin")
 	{
 		// add people to gym
 		gymAdminApi.POST("/people", api.AddPeople)

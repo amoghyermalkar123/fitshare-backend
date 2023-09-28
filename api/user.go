@@ -53,3 +53,19 @@ func (a *Api) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"user_details": userInfo, "token": tokenString})
 }
+
+func (a *Api) HomePage(c *gin.Context) {
+	userDetails := &types.NewUserHomePageRequest{}
+	if err := c.Bind(userDetails); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": fmt.Errorf("failed request operation: %v", err).Error()})
+		return
+	}
+
+	feedInfo, err := a.DB.GetGymEventsAndPeople(userDetails.GymID)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"status": "failed", "error": fmt.Errorf("failed db operation: %v", err).Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"feed": feedInfo})
+}
