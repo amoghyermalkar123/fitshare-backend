@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fitshare/api/types"
 	dbtypes "fitshare/db/dbTypes"
-	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
@@ -69,15 +69,47 @@ func (db *DB) GetGymEventsAndPeople(username string) (*types.UserHomePage, error
 	}
 
 	coll := db.client.Database("fitshare").Collection("gym_schedule")
-	// today := time.Now().UTC()
 
 	filter := bson.M{
-		"gym_id": gymMembersDetails,
+		"gym_id": gymMembersDetails.GymID,
 	}
 
-	res := &dbtypes.GymWeeklySchedule{}
-	result := coll.FindOne(context.Background(), filter).Decode(res)
+	gymSchedule := &dbtypes.GymWeeklySchedule{}
+	err = coll.FindOne(context.Background(), filter).Decode(gymSchedule)
+	if err != nil {
+		return nil, err
+	}
 
-	fmt.Println(result)
-	return nil, nil
+	homeFeed := &types.UserHomePage{}
+	for _, user := range gymMembersDetails.MemberUsernames {
+		if user == username {
+			continue
+		}
+		homeFeed.DiscoverPeople = append(homeFeed.DiscoverPeople, types.DiscoverPeople{
+			Username: user,
+		})
+	}
+
+	for _, event := range gymSchedule.Schedule {
+		if isDateToday(event.DateTime) {
+			homeFeed.TodaysEvent = append(homeFeed.TodaysEvent, types.TodaysEvent{
+				EventName: event.EventName,
+				EventTime: event.DateTime,
+			})
+		}
+	}
+
+	homeFeed.UserName = username
+	return homeFeed, nil
+}
+
+func isDateToday(dateToCheck time.Time) bool {
+	// Get the current date
+	currentDate := time.Now().Truncate(24 * time.Hour)
+
+	// Truncate the provided date to remove the time part
+	dateToCheck = dateToCheck.Truncate(24 * time.Hour)
+
+	// Compare the two dates
+	return dateToCheck.Equal(currentDate)
 }
