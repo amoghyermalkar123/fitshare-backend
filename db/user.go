@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -62,8 +61,9 @@ func (db *DB) ValidatePassword(inputPassword, dbPassword string) bool {
 
 func (db *DB) GetGymEventsAndPeople(username string) (*types.UserHomePage, error) {
 	memColl := db.client.Database("fitshare").Collection("gym_members")
-	var gymId primitive.ObjectID
-	err := memColl.FindOne(context.TODO(), bson.D{{"members", username}}).Decode(gymId)
+	gymMembersDetails := &dbtypes.DbGymMembers{}
+
+	err := memColl.FindOne(context.TODO(), bson.D{{"members", username}}).Decode(gymMembersDetails)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (db *DB) GetGymEventsAndPeople(username string) (*types.UserHomePage, error
 	// today := time.Now().UTC()
 
 	filter := bson.M{
-		"gym_id": gymId,
+		"gym_id": gymMembersDetails,
 	}
 
 	res := &dbtypes.GymWeeklySchedule{}
