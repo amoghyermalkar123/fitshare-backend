@@ -11,7 +11,7 @@ import (
 )
 
 func (db *DB) AddPeople(user *types.NewUserHomePageRequest) error {
-	coll := db.client.Database("fitshare").Collection("gym_members")
+	coll := db.client.Database("fitshare").Collection("gyms")
 	objID, err := primitive.ObjectIDFromHex(user.GymID)
 	if err != nil {
 		return err
@@ -21,17 +21,17 @@ func (db *DB) AddPeople(user *types.NewUserHomePageRequest) error {
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (db *DB) AddGymWeeklySchedule(schedule *dbtypes.GymWeeklySchedule) error {
-	coll := db.client.Database("fitshare").Collection("gym_schedule")
+	coll := db.client.Database("fitshare").Collection("gyms")
 
-	_, err := coll.InsertOne(context.TODO(), schedule)
+	_, err := coll.UpdateOne(context.TODO(), bson.M{"gym_id": schedule.GymID}, bson.M{"$push": bson.M{"schedule": schedule.Schedule}}, options.Update().SetUpsert(true))
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

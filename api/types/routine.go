@@ -21,14 +21,13 @@ type Exercise struct {
 }
 
 type Routine struct {
-	Name      string          `json:"name" bson:"name"`
 	Category  RoutineCategory `json:"category" bson:"category"`
 	Exercises []Exercise      `json:"exercises" bson:"exercises"`
 }
 
-type UserRoutine struct {
-	Email   string  `json:"email" bson:"email"`
-	Routine Routine `json:"routine" bson:"routine"`
+type UserRoutineCreation struct {
+	Username string  `json:"username" bson:"username"`
+	Routine  Routine `json:"routine" bson:"routine"`
 }
 
 type UserRoutineRequest struct {

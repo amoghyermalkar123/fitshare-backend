@@ -9,7 +9,7 @@ import (
 )
 
 func (a *Api) CreateRoutine(c *gin.Context) {
-	userRoutine := &types.UserRoutine{}
+	userRoutine := &types.UserRoutineCreation{}
 	if err := c.Bind(userRoutine); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": fmt.Errorf("failed request operation: %v", err).Error()})
 		return
@@ -24,9 +24,9 @@ func (a *Api) CreateRoutine(c *gin.Context) {
 }
 
 func (a *Api) GetRoutine(c *gin.Context) {
-	userEmail := c.Param("user-email")
+	username := c.Param("username")
 
-	routine, err := a.DB.GetRoutine(userEmail)
+	routine, err := a.DB.GetRoutine(username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed", "error": fmt.Errorf("failed db operation: %v", err).Error()})
 		return

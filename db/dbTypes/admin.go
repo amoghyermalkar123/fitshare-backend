@@ -7,7 +7,6 @@ import (
 )
 
 type GymWeeklySchedule struct {
-	ID       primitive.ObjectID `bson:"id" json:"id"`
 	GymID    primitive.ObjectID `bson:"gym_id" json:"gym_id"`
 	Schedule []Schedule         `bson:"schedule" json:"schedule"`
 }

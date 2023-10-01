@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func (db *DB) AddRoutine(userRoutine *types.UserRoutine) error {
+func (db *DB) AddRoutine(userRoutine *types.UserRoutineCreation) error {
 	coll := db.client.Database("fitshare").Collection("user_routines")
 
 	_, err := coll.InsertOne(context.TODO(), userRoutine)
@@ -18,11 +18,11 @@ func (db *DB) AddRoutine(userRoutine *types.UserRoutine) error {
 	return nil
 }
 
-func (db *DB) GetRoutine(userEmail string) (*types.UserRoutine, error) {
+func (db *DB) GetRoutine(username string) (*types.UserRoutineCreation, error) {
 	coll := db.client.Database("fitshare").Collection("user_routines")
-	userResponse := &types.UserRoutine{}
+	userResponse := &types.UserRoutineCreation{}
 
-	err := coll.FindOne(context.TODO(), bson.M{"email": userEmail}).Decode(userResponse)
+	err := coll.FindOne(context.TODO(), bson.M{"username": username}).Decode(userResponse)
 	if err != nil {
 		return nil, err
 	}
