@@ -32,5 +32,5 @@ func (a *Api) GetRoutine(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"routine": routine})
+	c.JSON(http.StatusOK, gin.H{"workouts": routine})
 }

@@ -5,12 +5,16 @@ import (
 	"fitshare/api/types"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (db *DB) AddRoutine(userRoutine *types.UserRoutineCreation) error {
 	coll := db.client.Database("fitshare").Collection("user_routines")
 
-	_, err := coll.InsertOne(context.TODO(), userRoutine)
+	_, err := coll.UpdateOne(context.TODO(), bson.M{"username": userRoutine.Username},
+		bson.M{"$push": bson.M{"routines": userRoutine.Routines}},
+		options.Update().SetUpsert(true))
+
 	if err != nil {
 		return err
 	}

@@ -26,8 +26,8 @@ type Routine struct {
 }
 
 type UserRoutineCreation struct {
-	Username string  `json:"username" bson:"username"`
-	Routine  Routine `json:"routine" bson:"routine"`
+	Username string    `json:"username" bson:"username"`
+	Routines []Routine `json:"routines" bson:"routines"`
 }
 
 type UserRoutineRequest struct {
